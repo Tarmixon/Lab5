@@ -1,28 +1,53 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Lessons from './pages/Lessons';
-import Practice from './pages/Practice';
 import ProgressPage from './pages/ProgressPage';
+import PracticePage from "./pages/PracticePage";
+import LoginPage from "./pages/LoginPage"; // переконайся, що є
+import { auth } from "./firebase";
+import { signOut, onAuthStateChanged } from "firebase/auth";
 import './App.css';
 
 function App() {
-  return (
-      <Router>
-        <header>
-          <h1>Language Learning Platform</h1>
-          <nav>
-            <Link to="/">Lessons</Link>
-            <Link to="/progress">My Progress</Link>
-            <Link to="/practice">Practice</Link>
-          </nav>
-        </header>
-        <Routes>
-          <Route path="/" element={<Lessons />} />
-          <Route path="/progress" element={<ProgressPage />} />
-          <Route path="/practice" element={<Practice />} />
-        </Routes>
-      </Router>
-  );
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, setUser);
+        return () => unsubscribe();
+    }, []);
+
+    const handleLogout = async () => {
+        try {
+            await signOut(auth);
+        } catch (error) {
+            console.error("Logout error:", error);
+        }
+    };
+
+    return (
+        <Router>
+            <header>
+                <h1>Language Learning Platform</h1>
+                <nav>
+                    <Link to="/">Lessons</Link>
+                    <Link to="/progress">My Progress</Link>
+                    <Link to="/practice">Practice</Link>
+
+                    {user ? (
+                        <button onClick={handleLogout} className="logout-button">Logout</button>
+                    ) : (
+                        <Link to="/login" className="login-link">Login</Link>
+                    )}
+                </nav>
+            </header>
+            <Routes>
+                <Route path="/" element={<Lessons />} />
+                <Route path="/progress" element={<ProgressPage />} />
+                <Route path="/practice" element={<PracticePage />} />
+                <Route path="/login" element={<LoginPage />} />
+            </Routes>
+        </Router>
+    );
 }
 
 export default App;
