@@ -25,15 +25,16 @@ export default function Lessons() {
         setCompletedLessons(completedIds);
     };
 
+    const fetchLessons = async () => {
+        const snapshot = await getDocs(collection(db, "lessons"));
+        const data = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+        setLessons(data);
+    };
+
     useEffect(() => {
-        const fetchLessons = async () => {
-            const snapshot = await getDocs(collection(db, "lessons"));
-            const data = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-            setLessons(data);
-        };
         fetchLessons();
     }, []);
 
@@ -52,7 +53,7 @@ export default function Lessons() {
 
     const handleReset = (lessonId) => {
         setCompletedLessons(prev => prev.filter(id => id !== lessonId));
-        // (необов’язково) Запит DELETE на бекенд
+        // (необов’язково) DELETE-запит на сервер
     };
 
     return (
@@ -65,6 +66,7 @@ export default function Lessons() {
                     isCompleted={completedLessons.includes(lesson.id)}
                     onComplete={handleComplete}
                     onReset={handleReset}
+                    onDelete={fetchLessons} // ✅ важливо: передаємо функцію оновлення
                     user={user}
                 />
             ))}

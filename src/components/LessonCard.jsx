@@ -1,6 +1,8 @@
 import React from 'react';
+import { doc, deleteDoc } from 'firebase/firestore';
+import { db } from '../firebase'; // переконайся, що шлях до firebase.js правильний
 
-const LessonCard = ({ lesson, onComplete, onReset, isCompleted, user }) => {
+const LessonCard = ({ lesson, onComplete, onReset, isCompleted, user, onDelete }) => {
     const handleComplete = async () => {
         onComplete(lesson.id); // локальне оновлення стану
 
@@ -22,6 +24,18 @@ const LessonCard = ({ lesson, onComplete, onReset, isCompleted, user }) => {
 
     const handleReset = () => {
         onReset(lesson.id);
+    };
+
+    const handleDelete = async () => {
+        if (window.confirm(`Ви впевнені, що хочете видалити урок "${lesson.title}"?`)) {
+            try {
+                await deleteDoc(doc(db, "lessons", lesson.id));
+                console.log("🗑️ Урок видалено");
+                onDelete(); // оновити список після видалення
+            } catch (error) {
+                console.error("❌ Помилка видалення уроку:", error);
+            }
+        }
     };
 
     return (
@@ -50,6 +64,9 @@ const LessonCard = ({ lesson, onComplete, onReset, isCompleted, user }) => {
                             Скасувати
                         </button>
                     )}
+                    <button onClick={handleDelete} style={{ marginLeft: '10px', backgroundColor: 'gray' }}>
+                        Видалити
+                    </button>
                 </>
             )}
         </div>
