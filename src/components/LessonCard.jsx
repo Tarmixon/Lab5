@@ -2,21 +2,14 @@ import React from 'react';
 
 const LessonCard = ({ lesson, onComplete, onReset, isCompleted, user, onDelete }) => {
     
-    // Функція для отримання правильного посилання для iframe
     const getEmbedUrl = (url) => {
         if (!url) return null;
-        
-        // Регулярний вираз для пошуку ID відео YouTube
-        // Підтримує формати: youtu.be/ID, youtube.com/watch?v=ID, youtube.com/embed/ID
         const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
         const match = url.match(regExp);
-
-        // Якщо ID знайдено і він має 11 символів (стандарт YouTube)
         if (match && match[2].length === 11) {
             return `https://www.youtube.com/embed/${match[2]}`;
         }
-        
-        return null; // Якщо це не YouTube або посилання бите
+        return null;
     };
 
     const embedUrl = getEmbedUrl(lesson.video);
@@ -28,11 +21,31 @@ const LessonCard = ({ lesson, onComplete, onReset, isCompleted, user, onDelete }
     };
 
     return (
-        <div className={`card ${isCompleted ? 'completed' : ''}`}>
+        <div className={`card ${isCompleted ? 'completed' : ''}`} style={{ position: 'relative' }}>
+            
+            {/* 👇 ВІДОБРАЖЕННЯ МОВИ ТА РІВНЯ (Badges) */}
+            <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
+                {lesson.language && (
+                    <span style={{ 
+                        backgroundColor: '#e0f2fe', color: '#0369a1', 
+                        padding: '4px 8px', borderRadius: '12px', fontSize: '0.8rem', fontWeight: 'bold' 
+                    }}>
+                        {lesson.language}
+                    </span>
+                )}
+                {lesson.level && (
+                    <span style={{ 
+                        backgroundColor: '#fef3c7', color: '#b45309', 
+                        padding: '4px 8px', borderRadius: '12px', fontSize: '0.8rem', fontWeight: 'bold' 
+                    }}>
+                        {lesson.level}
+                    </span>
+                )}
+            </div>
+
             <h3>{lesson.title}</h3>
             <p>{lesson.description}</p>
             
-            {/* Логіка відображення відео */}
             {embedUrl ? (
                 <iframe
                     width="100%"
@@ -44,21 +57,12 @@ const LessonCard = ({ lesson, onComplete, onReset, isCompleted, user, onDelete }
                     allowFullScreen
                 />
             ) : (
-                // Заглушка, якщо відео немає або посилання криве
                 <div style={{ 
-                    height: "200px", 
-                    backgroundColor: "#f0f0f0", 
-                    display: "flex", 
-                    alignItems: "center", 
-                    justifyContent: "center",
-                    borderRadius: "8px",
-                    marginBottom: "10px",
-                    color: "#888",
-                    fontSize: "0.9rem"
+                    height: "200px", backgroundColor: "#f0f0f0", display: "flex", 
+                    alignItems: "center", justifyContent: "center", borderRadius: "8px",
+                    marginBottom: "10px", color: "#888", fontSize: "0.9rem"
                 }}>
-                    {lesson.video && lesson.video.trim() !== "" 
-                        ? "⚠️ Невірне посилання на відео" 
-                        : "🎥 Відео відсутнє"}
+                    {lesson.video && lesson.video.trim() !== "" ? "⚠️ Невірне посилання" : "🎥 Відео відсутнє"}
                 </div>
             )}
 
