@@ -12,59 +12,59 @@ export default function ProgressPage() {
         completed: 0,
         percentage: 0
     });
+    // Новий стан для мотиваційного повідомлення
+    const [motivation, setMotivation] = useState(null);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser);
             if (currentUser) {
                 calculateProgress(currentUser.uid);
+                fetchComparisonStats(currentUser.uid); // <-- Викликаємо нову функцію
             }
         });
 
         return () => unsubscribe();
     }, []);
 
+    // ... (твоя функція calculateProgress залишається без змін) ...
     const calculateProgress = async (userId) => {
         try {
-            // 1. Спочатку отримуємо список ВАЛІДНИХ (існуючих) уроків з Firestore
-            // Використовуємо getDocs замість getCountFromServer, щоб отримати ID
             const lessonsSnapshot = await getDocs(collection(db, "lessons"));
             const validLessonIds = lessonsSnapshot.docs.map(doc => doc.id);
             const totalCount = validLessonIds.length;
 
-            // 2. Отримуємо список виконаних із сервера
             const res = await fetch(`/api/completed?userId=${userId}`);
             const completedData = await res.json();
 
-            // 3. ФІЛЬТРАЦІЯ: Залишаємо тільки ті виконані уроки, які досі існують
-            // Це прибере "привидів" (уроки, які ти видалив, але прогрес залишився)
             const validCompleted = completedData.filter(item => 
                 validLessonIds.includes(item.lessonId)
             );
             
             const completedCount = validCompleted.length;
-
-            // 4. Рахуємо відсоток
             const percentage = totalCount > 0 
                 ? Math.round((completedCount / totalCount) * 100) 
                 : 0;
 
-            setStats({ 
-                total: totalCount, 
-                completed: completedCount, 
-                percentage 
-            });
+            setStats({ total: totalCount, completed: completedCount, percentage });
         } catch (error) {
             console.error("Помилка завантаження прогресу:", error);
         }
     };
 
+    // 👇 НОВА ФУНКЦІЯ: Отримуємо "соціальну" статистику
+    const fetchComparisonStats = async (userId) => {
+        try {
+            const res = await fetch(`/api/stats?userId=${userId}`);
+            const data = await res.json();
+            setMotivation(data);
+        } catch (error) {
+            console.error("Помилка статистики:", error);
+        }
+    };
+
     if (!user) {
-        return (
-            <div className="page">
-                <p>Будь ласка, увійдіть, щоб переглянути свій прогрес.</p>
-            </div>
-        );
+        return <div className="page"><p>Будь ласка, увійдіть.</p></div>;
     }
 
     return (
@@ -76,6 +76,20 @@ export default function ProgressPage() {
                 <p style={{ fontSize: "1.2rem", color: "#555" }}>
                     Виконано <strong>{stats.completed}</strong> з <strong>{stats.total}</strong> уроків
                 </p>
+                
+                {/* 👇 Відображення мотивації */}
+                {motivation && (
+                    <div style={{ 
+                        marginTop: "15px", 
+                        padding: "15px", 
+                        backgroundColor: "#e0f2fe", 
+                        borderRadius: "8px",
+                        color: "#0369a1",
+                        fontWeight: "bold"
+                    }}>
+                        🏆 {motivation.message}
+                    </div>
+                )}
             </div>
 
             <Progress label="Всі уроки" value={stats.percentage} />
