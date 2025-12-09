@@ -192,3 +192,70 @@ input:focus, select:focus, textarea:focus {
 .footer-links a:hover {
   color: white;
 }
+
+/* Дизайн практики */
+
+/* Контейнер для одного варіанту відповіді */
+.quiz-option {
+  display: flex;          /* Вирівнює кнопку і текст в рядок */
+  align-items: center;    /* Центрує по вертикалі */
+  margin-bottom: 15px;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 10px;
+  transition: background-color 0.2s;
+  border: 2px solid transparent; /* Щоб не скакало при виборі */
+}
+
+.quiz-option:hover {
+  background-color: #eef2ff; /* Світло-синій фон при наведенні */
+}
+
+/* Стиль для активної (обраної) картки */
+.quiz-option.selected {
+  background-color: #e0e7ff;
+  border-color: var(--primary-color);
+}
+
+/* КАСТОМНА РАДІОКНОПКА (Rounded Square) */
+.custom-radio {
+  /* Прибираємо стандартний вигляд */
+  -webkit-appearance: none;
+  appearance: none;
+  /* Розміри (більші ніж стандартні) */
+  min-width: 24px;
+  width: 24px;
+  height: 24px;
+  /* Дизайн: заокруглений квадрат */
+  border: 2px solid #9ca3af;
+  border-radius: 6px; /* Радіус 6px робить "м'який" квадрат */
+  margin-right: 15px; /* Відступ від тексту */
+  position: relative;
+  cursor: pointer;
+  background-color: white;
+  transition: all 0.2s ease;
+}
+
+/* Стан: вибрано (checked) */
+.custom-radio:checked {
+  background-color: var(--primary-color); /* Заливка кольором */
+  border-color: var(--primary-color);
+}
+
+/* Галочка всередині (опціонально, або просто заливка) */
+.custom-radio:checked::after {
+  content: '✔';
+  color: white;
+  font-size: 16px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  line-height: 1;
+}
+
+/* Текст відповіді */
+.option-text {
+  font-size: 1.1rem;
+  color: var(--text-color);
+}
