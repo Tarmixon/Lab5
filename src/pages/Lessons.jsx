@@ -59,8 +59,22 @@ export default function Lessons() {
         });
     };
 
-    const handleReset = (lessonId) => {
+    const handleReset = async (lessonId) => { // Додали async
+        // 1. Оновлюємо інтерфейс миттєво
         setCompletedLessons(prev => prev.filter(id => id !== lessonId));
+
+        // 2. Відправляємо запит на сервер для видалення з бази
+        if (user) {
+            try {
+                // Передаємо параметри прямо в URL (?userId=...&lessonId=...)
+                await fetch(`/api/completed?userId=${user.uid}&lessonId=${lessonId}`, {
+                    method: "DELETE",
+                    headers: { "Content-Type": "application/json" }
+                });
+            } catch (error) {
+                console.error("Помилка скидання прогресу:", error);
+            }
+        }
     };
 
     const handleInputChange = (e) => {
