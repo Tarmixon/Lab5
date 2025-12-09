@@ -5,7 +5,10 @@ import ProgressPage from './pages/ProgressPage';
 import PracticePage from "./pages/PracticePage";
 import LoginPage from "./pages/LoginPage";
 import ProfilePage from './pages/ProfilePage';
-import Footer from './components/Footer'; // 👇 Імпорт футера
+import AboutPage from './pages/AboutPage';
+import ContactPage from './pages/ContactPage';
+
+import Footer from './components/Footer';
 import { auth } from "./firebase";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import './App.css';
@@ -28,7 +31,6 @@ function App() {
 
     return (
         <Router>
-            {/* 👇 Додав контейнер app-container */}
             <div className="app-container">
                 <header>
                     <h1>Language Platform</h1>
@@ -48,7 +50,6 @@ function App() {
                     </nav>
                 </header>
 
-                {/* 👇 Огортаємо контент у main-content */}
                 <main className="main-content">
                     <Routes>
                         <Route path="/" element={<Lessons />} />
@@ -56,10 +57,11 @@ function App() {
                         <Route path="/practice" element={<PracticePage />} />
                         <Route path="/login" element={<LoginPage />} />
                         <Route path="/profile" element={<ProfilePage />} />
+                        <Route path="/about" element={<AboutPage />} />
+                        <Route path="/contact" element={<ContactPage />} />
                     </Routes>
                 </main>
 
-                {/* 👇 Футер внизу */}
                 <Footer />
             </div>
         </Router>
