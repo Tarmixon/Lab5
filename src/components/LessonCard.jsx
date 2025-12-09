@@ -7,7 +7,7 @@ const LessonCard = ({ lesson, onComplete, onReset, isCompleted, user, onDelete }
         onComplete(lesson.id); // локальне оновлення стану
 
         try {
-            const response = await fetch("http://localhost:5000/api/completed", {
+            const response = await fetch("/api/completed", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
