@@ -61,6 +61,53 @@ app.delete("/api/completed", async (req, res) => {
     }
 });
 
+// Статистика порівняно з іншими
+app.get("/api/stats", async (req, res) => {
+    const { userId } = req.query;
+    try {
+        // 1. Агрегація: рахуємо, скільки уроків виконав КОЖЕН користувач
+        const allUsersProgress = await CompletedLesson.aggregate([
+            { 
+                $group: { 
+                    _id: "$userId",   // Групуємо по ID юзера
+                    count: { $sum: 1 } // Рахуємо кількість документів
+                } 
+            }
+        ]);
+
+        // 2. Знаходимо результат поточного користувача
+        const currentUserData = allUsersProgress.find(u => u._id === userId);
+        const userScore = currentUserData ? currentUserData.count : 0;
+
+        // 3. Рахуємо статистику
+        const totalUsers = allUsersProgress.length;
+        
+        if (totalUsers <= 1) {
+            return res.json({ 
+                percentile: 100, 
+                message: "Ви — наш перший або єдиний активний студент! Так тримати!" 
+            });
+        }
+
+        // Рахуємо, скільки людей мають МЕНШЕ виконаних уроків, ніж поточний юзер
+        const usersWorseThanMe = allUsersProgress.filter(u => u.count < userScore).length;
+
+        // Формула перцентилю: (кількість людей нижче / загальна кількість) * 100
+        const percentile = Math.round((usersWorseThanMe / (totalUsers - 1)) * 100);
+
+        res.json({
+            userScore,
+            totalUsers,
+            percentile,
+            message: `Ви працюєте краще, ніж ${percentile}% інших студентів!`
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // СТАТИЧНІ ФАЙЛИ REACT
 app.use(express.static(path.join(__dirname, "../build")));
 app.get("*", (req, res) => {
