@@ -138,6 +138,20 @@ app.post("/api/timer", async (req, res) => {
     }
 });
 
+app.delete("/api/user-all-data", async (req, res) => {
+    const { userId } = req.query;
+    try {
+        // Видаляємо всі завершені уроки
+        await CompletedLesson.deleteMany({ userId });
+        // Видаляємо запис про час
+        await StudyTime.deleteOne({ userId });
+        
+        res.status(200).json({ message: "Всі дані користувача видалено" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // СТАТИЧНІ ФАЙЛИ REACT
 app.use(express.static(path.join(__dirname, "../build")));
 app.get("*", (req, res) => {
