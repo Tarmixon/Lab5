@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase";
-import { collection, getCountFromServer } from "firebase/firestore"; 
+import { collection, getDocs } from "firebase/firestore"; 
 import Progress from "../components/Progress";
 import Timer from "../components/Timer";
 
 export default function ProgressPage() {
     const [user, setUser] = useState(null);
-    // Стан для збереження реальної статистики
     const [stats, setStats] = useState({
         total: 0,
         completed: 0,
@@ -27,19 +26,25 @@ export default function ProgressPage() {
 
     const calculateProgress = async (userId) => {
         try {
-            // 1. Отримуємо список виконаних уроків з твого сервера (MongoDB)
-            // Використовуємо відносний шлях для Render
+            // 1. Спочатку отримуємо список ВАЛІДНИХ (існуючих) уроків з Firestore
+            // Використовуємо getDocs замість getCountFromServer, щоб отримати ID
+            const lessonsSnapshot = await getDocs(collection(db, "lessons"));
+            const validLessonIds = lessonsSnapshot.docs.map(doc => doc.id);
+            const totalCount = validLessonIds.length;
+
+            // 2. Отримуємо список виконаних із сервера
             const res = await fetch(`/api/completed?userId=${userId}`);
             const completedData = await res.json();
-            const completedCount = completedData.length;
 
-            // 2. Отримуємо загальну кількість уроків з Firestore
-            // getCountFromServer - це ефективний спосіб порахувати документи без їх завантаження
-            const coll = collection(db, "lessons");
-            const snapshot = await getCountFromServer(coll);
-            const totalCount = snapshot.data().count;
+            // 3. ФІЛЬТРАЦІЯ: Залишаємо тільки ті виконані уроки, які досі існують
+            // Це прибере "привидів" (уроки, які ти видалив, але прогрес залишився)
+            const validCompleted = completedData.filter(item => 
+                validLessonIds.includes(item.lessonId)
+            );
+            
+            const completedCount = validCompleted.length;
 
-            // 3. Рахуємо відсоток
+            // 4. Рахуємо відсоток
             const percentage = totalCount > 0 
                 ? Math.round((completedCount / totalCount) * 100) 
                 : 0;
@@ -73,10 +78,8 @@ export default function ProgressPage() {
                 </p>
             </div>
 
-            {/* Компонент Progress тепер показує реальний відсоток */}
             <Progress label="Всі уроки" value={stats.percentage} />
 
-            {/* Таймер можна залишити як додаткову функцію */}
             <div style={{ marginTop: "40px" }}>
                 <Timer />
             </div>
