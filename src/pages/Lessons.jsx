@@ -5,15 +5,29 @@ import LessonCard from "../components/LessonCard";
 import { auth } from "../firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
+// Константи для вибору
+const LANGUAGES = ["English", "Spanish", "German", "French", "Ukrainian"];
+const LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
+
 export default function Lessons() {
     const [lessons, setLessons] = useState([]);
     const [user, setUser] = useState(null);
     const [completedLessons, setCompletedLessons] = useState([]);
     const [showForm, setShowForm] = useState(false);
+    
+    // Стан для нового уроку (додані language та level)
     const [newLesson, setNewLesson] = useState({
         title: "",
         description: "",
         video: "",
+        language: "English", // значення за замовчуванням
+        level: "A1"
+    });
+
+    // 👇 Стан для фільтрів
+    const [filters, setFilters] = useState({
+        language: "All",
+        level: "All"
     });
 
     useEffect(() => {
@@ -25,11 +39,14 @@ export default function Lessons() {
     }, []);
 
     const fetchCompletedLessons = async (userId) => {
-        // ЗМІНА 1: Прибрано http://localhost:5000
-        const res = await fetch(`/api/completed?userId=${userId}`);
-        const data = await res.json();
-        const completedIds = data.map(entry => entry.lessonId);
-        setCompletedLessons(completedIds);
+        try {
+            const res = await fetch(`/api/completed?userId=${userId}`);
+            const data = await res.json();
+            const completedIds = data.map(entry => entry.lessonId);
+            setCompletedLessons(completedIds);
+        } catch (e) {
+            console.error(e);
+        }
     };
 
     const fetchLessons = async () => {
@@ -47,32 +64,23 @@ export default function Lessons() {
 
     const handleComplete = async (lessonId) => {
         setCompletedLessons(prev => [...prev, lessonId]);
-
-        // ЗМІНА 2: Прибрано http://localhost:5000
         await fetch("/api/completed", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                userId: user.uid,
-                lessonId: lessonId
-            })
+            body: JSON.stringify({ userId: user.uid, lessonId })
         });
     };
 
-    const handleReset = async (lessonId) => { // Додали async
-        // 1. Оновлюємо інтерфейс миттєво
+    const handleReset = async (lessonId) => {
         setCompletedLessons(prev => prev.filter(id => id !== lessonId));
-
-        // 2. Відправляємо запит на сервер для видалення з бази
         if (user) {
             try {
-                // Передаємо параметри прямо в URL (?userId=...&lessonId=...)
                 await fetch(`/api/completed?userId=${user.uid}&lessonId=${lessonId}`, {
                     method: "DELETE",
                     headers: { "Content-Type": "application/json" }
                 });
             } catch (error) {
-                console.error("Помилка скидання прогресу:", error);
+                console.error("Error resetting:", error);
             }
         }
     };
@@ -85,7 +93,11 @@ export default function Lessons() {
         e.preventDefault();
         try {
             await addDoc(collection(db, "lessons"), newLesson);
-            setNewLesson({ title: "", description: "", video: "" });
+            // Скидаємо форму
+            setNewLesson({ 
+                title: "", description: "", video: "", 
+                language: "English", level: "A1" 
+            });
             setShowForm(false);
             fetchLessons();
         } catch (err) {
@@ -102,55 +114,94 @@ export default function Lessons() {
         }
     };
 
+    // 👇 ЛОГІКА ФІЛЬТРАЦІЇ
+    const filteredLessons = lessons.filter(lesson => {
+        const matchLang = filters.language === "All" || lesson.language === filters.language;
+        const matchLevel = filters.level === "All" || lesson.level === filters.level;
+        return matchLang && matchLevel;
+    });
+
     return (
         <div className="page">
-            <h2>Уроки</h2>
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                <h2>Уроки</h2>
+                
+                {/* 👇 БЛОК ФІЛЬТРІВ (Справа зверху) */}
+                <div className="filters" style={{display: 'flex', gap: '10px'}}>
+                    <select 
+                        value={filters.language} 
+                        onChange={(e) => setFilters({...filters, language: e.target.value})}
+                    >
+                        <option value="All">Всі мови</option>
+                        {LANGUAGES.map(lang => <option key={lang} value={lang}>{lang}</option>)}
+                    </select>
+
+                    <select 
+                        value={filters.level} 
+                        onChange={(e) => setFilters({...filters, level: e.target.value})}
+                    >
+                        <option value="All">Всі рівні</option>
+                        {LEVELS.map(lvl => <option key={lvl} value={lvl}>{lvl}</option>)}
+                    </select>
+                </div>
+            </div>
+
             {user && (
                 <>
-                    <button onClick={() => setShowForm(!showForm)}>
+                    <button onClick={() => setShowForm(!showForm)} style={{marginBottom: '20px'}}>
                         {showForm ? "Сховати форму" : "Створити урок"}
                     </button>
 
                     {showForm && (
-                        <form onSubmit={handleAddLesson} style={{ marginTop: "10px" }}>
+                        <form onSubmit={handleAddLesson} style={{ 
+                            marginBottom: "20px", padding: "15px", 
+                            border: "1px solid #ccc", borderRadius: "8px" 
+                        }}>
                             <input
-                                type="text"
-                                name="title"
-                                placeholder="Назва уроку"
-                                value={newLesson.title}
-                                onChange={handleInputChange}
-                                required
+                                type="text" name="title" placeholder="Назва уроку"
+                                value={newLesson.title} onChange={handleInputChange} required
                             />
                             <textarea
-                                name="description"
-                                placeholder="Опис"
-                                value={newLesson.description}
-                                onChange={handleInputChange}
-                                required
+                                name="description" placeholder="Опис"
+                                value={newLesson.description} onChange={handleInputChange} required
                             />
                             <input
-                                type="text"
-                                name="video"
-                                placeholder="YouTube URL"
-                                value={newLesson.video}
-                                onChange={handleInputChange}
+                                type="text" name="video" placeholder="YouTube URL"
+                                value={newLesson.video} onChange={handleInputChange}
                             />
-                            <button type="submit">Додати</button>
+                            
+                            {/* 👇 Нові поля у формі */}
+                            <div style={{display: 'flex', gap: '10px', marginTop: '10px'}}>
+                                <select name="language" value={newLesson.language} onChange={handleInputChange}>
+                                    {LANGUAGES.map(lang => <option key={lang} value={lang}>{lang}</option>)}
+                                </select>
+                                <select name="level" value={newLesson.level} onChange={handleInputChange}>
+                                    {LEVELS.map(lvl => <option key={lvl} value={lvl}>{lvl}</option>)}
+                                </select>
+                            </div>
+
+                            <button type="submit" style={{marginTop: '10px'}}>Додати урок</button>
                         </form>
                     )}
                 </>
             )}
-            {lessons.map((lesson) => (
-                <LessonCard
-                    key={lesson.id}
-                    lesson={lesson}
-                    isCompleted={completedLessons.includes(lesson.id)}
-                    onComplete={handleComplete}
-                    onReset={handleReset}
-                    onDelete={() => handleDeleteLesson(lesson.id)}
-                    user={user}
-                />
-            ))}
+
+            {/* 👇 Рендеримо ВІДФІЛЬТРОВАНИЙ список */}
+            {filteredLessons.length > 0 ? (
+                filteredLessons.map((lesson) => (
+                    <LessonCard
+                        key={lesson.id}
+                        lesson={lesson}
+                        isCompleted={completedLessons.includes(lesson.id)}
+                        onComplete={handleComplete}
+                        onReset={handleReset}
+                        onDelete={() => handleDeleteLesson(lesson.id)}
+                        user={user}
+                    />
+                ))
+            ) : (
+                <p>Уроків за цими фільтрами не знайдено.</p>
+            )}
         </div>
     );
 }
