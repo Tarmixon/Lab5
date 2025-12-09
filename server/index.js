@@ -48,6 +48,19 @@ app.get("/api/completed", async (req, res) => {
     }
 });
 
+// Видалити запис про завершений урок
+app.delete("/api/completed", async (req, res) => {
+    // Важливо: для DELETE читаємо параметри з req.query (адресний рядок)
+    const { userId, lessonId } = req.query; 
+    
+    try {
+        await CompletedLesson.findOneAndDelete({ userId, lessonId });
+        res.status(200).json({ message: "Прогрес скинуто" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // СТАТИЧНІ ФАЙЛИ REACT
 app.use(express.static(path.join(__dirname, "../build")));
 app.get("*", (req, res) => {
