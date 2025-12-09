@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { QUESTIONS } from '../data/quizzes'; 
 
 export default function PracticePage() {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -31,6 +32,7 @@ export default function PracticePage() {
         setIsFinished(false);
     };
 
+    // Екран результатів
     if (isFinished) {
         return (
             <div className="page" style={{textAlign: 'center'}}>
@@ -48,18 +50,28 @@ export default function PracticePage() {
     }
 
     const currentQuestion = QUESTIONS[currentQuestionIndex];
+    // Розрахунок прогресу у відсотках
     const progress = Math.round(((currentQuestionIndex) / QUESTIONS.length) * 100);
 
     return (
         <div className="page">
             <div style={{maxWidth: '700px', margin: '0 auto'}}>
+                
+                {/* Заголовок і лічильник */}
                 <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '10px'}}>
                     <h2 style={{margin: 0}}>Практика</h2>
-                    <span style={{color: '#666'}}>Питання {currentQuestionIndex + 1} з {QUESTIONS.length}</span>
+                    <span style={{color: '#666'}}>
+                        Питання {currentQuestionIndex + 1} з {QUESTIONS.length}
+                    </span>
                 </div>
 
                 {/* Прогрес бар */}
-                <div style={{height: '8px', backgroundColor: '#e5e7eb', borderRadius: '4px', marginBottom: '30px'}}>
+                <div style={{
+                    height: '8px', 
+                    backgroundColor: '#e5e7eb', 
+                    borderRadius: '4px', 
+                    marginBottom: '30px'
+                }}>
                     <div style={{
                         height: '100%', 
                         width: `${progress}%`, 
@@ -69,13 +81,17 @@ export default function PracticePage() {
                     }}></div>
                 </div>
 
+                {/* Картка з питанням */}
                 <div className="card">
-                    <h3 style={{fontSize: '1.4rem', marginBottom: '25px'}}>{currentQuestion.question}</h3>
+                    <h3 style={{fontSize: '1.4rem', marginBottom: '25px'}}>
+                        {currentQuestion.question}
+                    </h3>
                     
                     <div className="quiz-options">
                         {currentQuestion.options.map((option, index) => (
                             <label 
                                 key={index} 
+                                // Додаємо клас 'selected', якщо цей варіант обрано
                                 className={`quiz-option ${selectedOption === option ? 'selected' : ''}`}
                             >
                                 <input 
@@ -84,7 +100,7 @@ export default function PracticePage() {
                                     value={option}
                                     checked={selectedOption === option}
                                     onChange={() => handleOptionSelect(option)}
-                                    className="custom-radio"
+                                    className="custom-radio" // Клас для стилізації кнопки
                                 />
                                 <span className="option-text">{option}</span>
                             </label>
@@ -94,7 +110,7 @@ export default function PracticePage() {
                     <div style={{display: 'flex', justifyContent: 'flex-end', marginTop: '20px'}}>
                         <button 
                             onClick={handleNext} 
-                            disabled={!selectedOption}
+                            disabled={!selectedOption} // Блокуємо кнопку, поки не обрано варіант
                             style={{padding: '12px 30px'}}
                         >
                             {currentQuestionIndex === QUESTIONS.length - 1 ? "Завершити" : "Далі"}
