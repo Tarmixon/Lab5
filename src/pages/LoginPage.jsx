@@ -28,86 +28,122 @@ export default function LoginPage() {
             }
             navigate("/");
         } catch (err) {
-            setError(err.message);
+            // Спрощуємо повідомлення про помилки Firebase для користувача
+            if (err.code === 'auth/invalid-credential') {
+                setError("Невірний email або пароль.");
+            } else if (err.code === 'auth/email-already-in-use') {
+                setError("Цей email вже використовується.");
+            } else if (err.code === 'auth/weak-password') {
+                setError("Пароль занадто слабкий (мінімум 6 символів).");
+            } else {
+                setError(err.message);
+            }
         }
     };
 
     const handleResetPassword = async () => {
         if (!email) {
-            setError("Please enter your email first.");
+            setError("Будь ласка, введіть свій email у поле вище, щоб скинути пароль.");
             return;
         }
 
         try {
             await sendPasswordResetEmail(auth, email);
-            setMessage("Password reset email sent.");
+            setMessage("Лист для скидання пароля надіслано! Перевірте пошту.");
+            setError("");
         } catch (err) {
             setError(err.message);
         }
     };
 
+    // Стиль для кнопок, які виглядають як текст (скасовуємо глобальний стиль кнопки)
+    const linkButtonStyle = {
+        background: "none",
+        border: "none",
+        color: "var(--primary-color)",
+        cursor: "pointer",
+        padding: "0",
+        fontSize: "0.95rem",
+        textDecoration: "underline",
+        boxShadow: "none",
+        transform: "none",
+        fontWeight: "normal",
+        marginTop: "5px"
+    };
+
     return (
-        <div className="page">
-            <h2>{isRegistering ? "Register" : "Login"}</h2>
+        // Використовуємо класи для центрування з App.css
+        <div className="auth-page-container">
+            <div className="auth-form-box">
+                <h2>{isRegistering ? "Реєстрація" : "Вхід"}</h2>
 
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => {
-                        setEmail(e.target.value);
-                        setError("");
-                        setMessage("");
-                    }}
-                    required
-                />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => {
-                        setPassword(e.target.value);
-                        setError("");
-                        setMessage("");
-                    }}
-                    required
-                />
-                <button type="submit">{isRegistering ? "Register" : "Login"}</button>
-            </form>
+                {message && (
+                    <div style={{ 
+                        backgroundColor: "#dcfce7", color: "#166534", 
+                        padding: "10px", borderRadius: "8px", marginBottom: "15px", fontSize: "0.9rem" 
+                    }}>
+                        {message}
+                    </div>
+                )}
+                
+                {error && (
+                    <div style={{ 
+                        backgroundColor: "#fee2e2", color: "#991b1b", 
+                        padding: "10px", borderRadius: "8px", marginBottom: "15px", fontSize: "0.9rem" 
+                    }}>
+                        {error}
+                    </div>
+                )}
 
-            {!isRegistering && (
-                <button
-                    onClick={handleResetPassword}
-                    style={{
-                        background: "none",
-                        border: "none",
-                        color: "#007bff",
-                        marginTop: "10px",
-                        cursor: "pointer",
-                        textDecoration: "underline",
-                    }}
-                >
-                    Forgot password?
-                </button>
-            )}
+                <form onSubmit={handleSubmit}>
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+                    <input
+                        type="password"
+                        placeholder="Пароль"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                    
+                    {/* Головна кнопка (автоматично бере стиль з App.css) */}
+                    <button type="submit" style={{ width: "100%", marginTop: "15px" }}>
+                        {isRegistering ? "Зареєструватися" : "Увійти"}
+                    </button>
+                </form>
 
-            <p style={{ marginTop: "10px" }}>
-                {isRegistering ? "Already have an account?" : "Don't have an account?"}{" "}
-                <button
-                    onClick={() => {
-                        setIsRegistering(!isRegistering);
-                        setMessage("");
-                        setError("");
-                    }}
-                    style={{ color: "#007bff", background: "none", border: "none", cursor: "pointer" }}
-                >
-                    {isRegistering ? "Login" : "Register"}
-                </button>
-            </p>
+                <div style={{ marginTop: "20px", fontSize: "0.9rem", color: "#555" }}>
+                    {!isRegistering && (
+                        <div style={{ marginBottom: "10px" }}>
+                            <button
+                                onClick={handleResetPassword}
+                                style={linkButtonStyle}
+                            >
+                                Забули пароль?
+                            </button>
+                        </div>
+                    )}
 
-            {message && <p style={{ color: "green" }}>{message}</p>}
-            {error && <p style={{ color: "red" }}>{error}</p>}
+                    <div style={{ borderTop: "1px solid #eee", paddingTop: "15px" }}>
+                        {isRegistering ? "Вже є акаунт? " : "Немає акаунту? "}
+                        <button
+                            onClick={() => {
+                                setIsRegistering(!isRegistering);
+                                setMessage("");
+                                setError("");
+                            }}
+                            style={{ ...linkButtonStyle, fontWeight: "bold" }}
+                        >
+                            {isRegistering ? "Увійти" : "Зареєструватися"}
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
