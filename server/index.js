@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const path = require("path");
+const StudyTime = require("./models/StudyTime");
 require("dotenv").config();
 
 const CompletedLesson = require("./models/CompletedLesson");
@@ -104,6 +105,35 @@ app.get("/api/stats", async (req, res) => {
 
     } catch (err) {
         console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+//Таймер
+app.get("/api/timer", async (req, res) => {
+    const { userId } = req.query;
+    try {
+        let record = await StudyTime.findOne({ userId });
+        if (!record) {
+            record = await StudyTime.create({ userId, totalSeconds: 0 });
+        }
+        res.json({ totalSeconds: record.totalSeconds });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ОНОВИТИ час (додати секунди)
+app.post("/api/timer", async (req, res) => {
+    const { userId, secondsToAdd } = req.body;
+    try {
+        const record = await StudyTime.findOneAndUpdate(
+            { userId },
+            { $inc: { totalSeconds: secondsToAdd }, lastUpdated: new Date() }, // $inc додає до існуючого значення
+            { new: true, upsert: true } // створює, якщо немає
+        );
+        res.json({ totalSeconds: record.totalSeconds });
+    } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
