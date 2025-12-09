@@ -1,5 +1,5 @@
-// Приклад запитань
-const QUESTIONS = [
+
+export const QUESTIONS = [
     {
         id: 1,
         question: "Як перекласти слово 'Success'?",
@@ -17,5 +17,17 @@ const QUESTIONS = [
         question: "Що означає ідіома 'Piece of cake'?",
         options: ["Шматок торта", "Дуже легко", "Дуже складно", "Час обідати"],
         correct: "Дуже легко"
+    },
+    {
+        id: 4,
+        question: "Яке слово є синонімом до 'Fast'?",
+        options: ["Slow", "Quick", "Calm", "Hard"],
+        correct: "Quick"
+    },
+    {
+        id: 5,
+        question: "Як перекласти 'Library'?",
+        options: ["Книгарня", "Бібліотека", "Лабораторія", "Лікарня"],
+        correct: "Бібліотека"
     }
 ];
