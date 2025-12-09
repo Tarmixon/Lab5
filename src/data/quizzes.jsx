@@ -1,35 +1,21 @@
-
-export const quizzes = [
+// Приклад запитань
+const QUESTIONS = [
     {
-        title: "Test 1: Greetings",
-        question: "How do you say 'Hello' in French?",
-        type: "radio",
-        name: "greeting",
-        options: [
-            { label: "Bonjour", value: "correct" },
-            { label: "Hola", value: "wrong" },
-            { label: "Ciao", value: "wrong" }
-        ]
+        id: 1,
+        question: "Як перекласти слово 'Success'?",
+        options: ["Поразка", "Успіх", "Швидкість", "Сумнів"],
+        correct: "Успіх"
     },
     {
-        title: "Test 2: Ordering Food",
-        question: "Which phrase means 'I would like a coffee'?",
-        type: "radio",
-        name: "food",
-        options: [
-            { label: "Je voudrais un café", value: "correct" },
-            { label: "Ich möchte einen Kaffee", value: "wrong" },
-            { label: "Yo quiero un café", value: "wrong" }
-        ]
+        id: 2,
+        question: "Оберіть правильну форму дієслова: He ___ to school every day.",
+        options: ["go", "going", "goes", "gone"],
+        correct: "goes"
     },
     {
-        title: "Test 3: Goodbye",
-        question: "Which of the following are ways to say 'Goodbye'?",
-        type: "checkbox",
-        options: [
-            { label: "Adieu", correct: true },
-            { label: "Auf Wiedersehen", correct: true },
-            { label: "Bonjour", correct: false }
-        ]
+        id: 3,
+        question: "Що означає ідіома 'Piece of cake'?",
+        options: ["Шматок торта", "Дуже легко", "Дуже складно", "Час обідати"],
+        correct: "Дуже легко"
     }
 ];
