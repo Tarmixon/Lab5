@@ -3,7 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Lessons from './pages/Lessons';
 import ProgressPage from './pages/ProgressPage';
 import PracticePage from "./pages/PracticePage";
-import LoginPage from "./pages/LoginPage"; // переконайся, що є
+import ProfilePage from './pages/ProfilePage';
+import LoginPage from "./pages/LoginPage";
 import { auth } from "./firebase";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import './App.css';
@@ -34,7 +35,10 @@ function App() {
                     <Link to="/practice">Practice</Link>
 
                     {user ? (
-                        <button onClick={handleLogout} className="logout-button">Logout</button>
+                        <>
+                            <Link to="/profile" style={{ marginRight: '10px' }}>Profile</Link>
+                            <button onClick={handleLogout} className="logout-button">Logout</button>
+                        </>
                     ) : (
                         <Link to="/login" className="login-link">Login</Link>
                     )}
@@ -45,6 +49,7 @@ function App() {
                 <Route path="/progress" element={<ProgressPage />} />
                 <Route path="/practice" element={<PracticePage />} />
                 <Route path="/login" element={<LoginPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
             </Routes>
         </Router>
     );
