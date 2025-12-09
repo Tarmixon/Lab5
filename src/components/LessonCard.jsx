@@ -1,40 +1,13 @@
 import React from 'react';
-import { doc, deleteDoc } from 'firebase/firestore';
-import { db } from '../firebase'; // переконайся, що шлях до firebase.js правильний
 
 const LessonCard = ({ lesson, onComplete, onReset, isCompleted, user, onDelete }) => {
-    const handleComplete = async () => {
-        onComplete(lesson.id); // локальне оновлення стану
+    
+    // Ми прибрали звідси fetch, бо він вже є в Lessons.jsx
+    // Ми прибрали deleteDoc, бо він вже є в Lessons.jsx
 
-        try {
-            const response = await fetch("/api/completed", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    userId: user?.uid,
-                    lessonId: lesson.id
-                })
-            });
-            const data = await response.json();
-            console.log("✅ Позначено як виконаний:", data);
-        } catch (err) {
-            console.error("❌ Помилка збереження на сервері:", err);
-        }
-    };
-
-    const handleReset = () => {
-        onReset(lesson.id);
-    };
-
-    const handleDelete = async () => {
+    const handleDelete = () => {
         if (window.confirm(`Ви впевнені, що хочете видалити урок "${lesson.title}"?`)) {
-            try {
-                await deleteDoc(doc(db, "lessons", lesson.id));
-                console.log("🗑️ Урок видалено");
-                onDelete(); // оновити список після видалення
-            } catch (error) {
-                console.error("❌ Помилка видалення уроку:", error);
-            }
+            onDelete(); // Викликаємо функцію батька, яка все зробить
         }
     };
 
@@ -54,17 +27,26 @@ const LessonCard = ({ lesson, onComplete, onReset, isCompleted, user, onDelete }
                 <>
                     <button
                         style={{ backgroundColor: isCompleted ? 'green' : '#4F46E5' }}
-                        onClick={handleComplete}
+                        // Просто викликаємо функцію, яку передав батько (Lessons.jsx)
+                        onClick={() => onComplete(lesson.id)} 
                         disabled={isCompleted}
                     >
                         {isCompleted ? 'Виконано' : 'Позначити як виконаний'}
                     </button>
+                    
                     {isCompleted && (
-                        <button onClick={handleReset} style={{ marginLeft: '10px', backgroundColor: 'red' }}>
+                        <button 
+                            onClick={() => onReset(lesson.id)} // Викликаємо батьківську функцію
+                            style={{ marginLeft: '10px', backgroundColor: 'red' }}
+                        >
                             Скасувати
                         </button>
                     )}
-                    <button onClick={handleDelete} style={{ marginLeft: '10px', backgroundColor: 'gray' }}>
+                    
+                    <button 
+                        onClick={handleDelete} 
+                        style={{ marginLeft: '10px', backgroundColor: 'gray' }}
+                    >
                         Видалити
                     </button>
                 </>
