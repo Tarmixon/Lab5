@@ -25,7 +25,8 @@ export default function Lessons() {
     }, []);
 
     const fetchCompletedLessons = async (userId) => {
-        const res = await fetch(`http://localhost:5000/api/completed?userId=${userId}`);
+        // ЗМІНА 1: Прибрано http://localhost:5000
+        const res = await fetch(`/api/completed?userId=${userId}`);
         const data = await res.json();
         const completedIds = data.map(entry => entry.lessonId);
         setCompletedLessons(completedIds);
@@ -47,7 +48,8 @@ export default function Lessons() {
     const handleComplete = async (lessonId) => {
         setCompletedLessons(prev => [...prev, lessonId]);
 
-        await fetch("http://localhost:5000/api/completed", {
+        // ЗМІНА 2: Прибрано http://localhost:5000
+        await fetch("/api/completed", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -59,7 +61,6 @@ export default function Lessons() {
 
     const handleReset = (lessonId) => {
         setCompletedLessons(prev => prev.filter(id => id !== lessonId));
-        // (необов’язково) DELETE-запит на сервер
     };
 
     const handleInputChange = (e) => {
@@ -72,17 +73,16 @@ export default function Lessons() {
             await addDoc(collection(db, "lessons"), newLesson);
             setNewLesson({ title: "", description: "", video: "" });
             setShowForm(false);
-            fetchLessons(); // оновити список уроків після додавання
+            fetchLessons();
         } catch (err) {
             console.error("Помилка додавання уроку:", err);
         }
     };
 
-    // Функція видалення уроку з Firestore:
     const handleDeleteLesson = async (lessonId) => {
         try {
             await deleteDoc(doc(db, "lessons", lessonId));
-            fetchLessons(); // оновити список після видалення
+            fetchLessons();
         } catch (err) {
             console.error("Помилка видалення уроку:", err);
         }
@@ -133,7 +133,7 @@ export default function Lessons() {
                     isCompleted={completedLessons.includes(lesson.id)}
                     onComplete={handleComplete}
                     onReset={handleReset}
-                    onDelete={() => handleDeleteLesson(lesson.id)} // передаємо функцію видалення
+                    onDelete={() => handleDeleteLesson(lesson.id)}
                     user={user}
                 />
             ))}
