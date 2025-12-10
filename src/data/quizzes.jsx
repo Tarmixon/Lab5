@@ -16,7 +16,7 @@ export const QUESTIONS = [
         id: 3,
         question: "Що означає ідіома 'Piece of cake'?",
         options: ["Шматок торта", "Дуже легко", "Дуже складно", "Час обідати"],
-        correct: "Шматок торта"
+        correct: "Дуже легко"
     },
     {
         id: 4,
