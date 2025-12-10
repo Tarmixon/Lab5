@@ -123,11 +123,10 @@ export default function Lessons() {
 
     return (
         <div className="page">
-            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+            <div className="lessons-header">
                 <h2>Уроки</h2>
                 
-                {/* 👇 БЛОК ФІЛЬТРІВ (Справа зверху) */}
-                <div className="filters" style={{display: 'flex', gap: '10px'}}>
+                <div className="filters">
                     <select 
                         value={filters.language} 
                         onChange={(e) => setFilters({...filters, language: e.target.value})}
