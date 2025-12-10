@@ -142,7 +142,7 @@ export default function ProgressPage() {
             </div>
 
             {/* 👇 Секції з детальною статистикою */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+            <div className="stats-grid">
                 <div>
                     {renderStatsList(langStats, "По мовах 🌍")}
                 </div>
