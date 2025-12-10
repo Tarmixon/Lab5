@@ -23,21 +23,14 @@ const LessonCard = ({ lesson, onComplete, onReset, isCompleted, user, onDelete }
     return (
         <div className={`card ${isCompleted ? 'completed' : ''}`} style={{ position: 'relative' }}>
             
-            {/* 👇 ВІДОБРАЖЕННЯ МОВИ ТА РІВНЯ (Badges) */}
-            <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
+            <div style={{ display: 'flex', gap: '10px', marginBottom: '10px', flexWrap: 'wrap' }}>
                 {lesson.language && (
-                    <span style={{ 
-                        backgroundColor: '#e0f2fe', color: '#0369a1', 
-                        padding: '4px 8px', borderRadius: '12px', fontSize: '0.8rem', fontWeight: 'bold' 
-                    }}>
+                    <span style={{ backgroundColor: '#e0f2fe', color: '#0369a1', padding: '4px 8px', borderRadius: '12px', fontSize: '0.8rem', fontWeight: 'bold' }}>
                         {lesson.language}
                     </span>
                 )}
                 {lesson.level && (
-                    <span style={{ 
-                        backgroundColor: '#fef3c7', color: '#b45309', 
-                        padding: '4px 8px', borderRadius: '12px', fontSize: '0.8rem', fontWeight: 'bold' 
-                    }}>
+                    <span style={{ backgroundColor: '#fef3c7', color: '#b45309', padding: '4px 8px', borderRadius: '12px', fontSize: '0.8rem', fontWeight: 'bold' }}>
                         {lesson.level}
                     </span>
                 )}
@@ -55,19 +48,18 @@ const LessonCard = ({ lesson, onComplete, onReset, isCompleted, user, onDelete }
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
+                    style={{ borderRadius: '12px' }}
                 />
             ) : (
-                <div style={{ 
-                    height: "200px", backgroundColor: "#f0f0f0", display: "flex", 
-                    alignItems: "center", justifyContent: "center", borderRadius: "8px",
-                    marginBottom: "10px", color: "#888", fontSize: "0.9rem"
-                }}>
+                <div style={{ height: "200px", backgroundColor: "#f0f0f0", display: "flex", alignItems: "center", justifyContent: "center", borderRadius: "12px", marginBottom: "10px", color: "#888", fontSize: "0.9rem" }}>
                     {lesson.video && lesson.video.trim() !== "" ? "⚠️ Невірне посилання" : "🎥 Відео відсутнє"}
                 </div>
             )}
 
             {user && (
-                <div style={{ marginTop: '10px' }}>
+                // 👇 ОНОВЛЕНИЙ КОНТЕЙНЕР КНОПОК
+                // Ми прибрали inline-стилі і додали клас lesson-card-actions
+                <div className="lesson-card-actions">
                     <button
                         style={{ backgroundColor: isCompleted ? 'green' : '#4F46E5' }}
                         onClick={() => onComplete(lesson.id)} 
@@ -77,17 +69,19 @@ const LessonCard = ({ lesson, onComplete, onReset, isCompleted, user, onDelete }
                     </button>
                     
                     {isCompleted && (
+                        // 👇 Прибрано marginLeft
                         <button 
                             onClick={() => onReset(lesson.id)} 
-                            style={{ marginLeft: '10px', backgroundColor: 'red' }}
+                            style={{ backgroundColor: 'red' }}
                         >
                             Скасувати
                         </button>
                     )}
                     
+                    {/* 👇 Прибрано marginLeft */}
                     <button 
                         onClick={handleDelete} 
-                        style={{ marginLeft: '10px', backgroundColor: 'gray' }}
+                        style={{ backgroundColor: 'gray' }}
                     >
                         Видалити
                     </button>
