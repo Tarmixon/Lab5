@@ -1,3 +1,5 @@
+/* src/App.css */
+
 /* 1. Базові налаштування */
 :root {
   --primary-color: #4F46E5;
@@ -18,244 +20,118 @@ body {
 }
 
 /* 2. Макет */
-.app-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-.main-content {
-  flex: 1;
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
+.app-container { display: flex; flex-direction: column; min-height: 100vh; }
+.main-content { flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 20px; }
 
 /* 3. Шапка */
 header {
-  background-color: var(--card-bg);
-  padding: 1rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  background-color: var(--card-bg); padding: 1rem 2rem; display: flex;
+  justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
-
-header h1 {
-  margin: 0;
-  font-size: 1.5rem;
-  color: var(--primary-color);
-}
-
-nav a {
-  margin-left: 20px;
-  text-decoration: none;
-  color: #4b5563;
-  font-weight: 500;
-  transition: color 0.2s;
-}
-
+header h1 { margin: 0; font-size: 1.5rem; color: var(--primary-color); }
+nav a { margin-left: 20px; text-decoration: none; color: #4b5563; font-weight: 500; transition: color 0.2s; }
 nav a:hover { color: var(--primary-color); }
 
 /* 4. Елементи UI */
 button {
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 12px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
+  background-color: var(--primary-color); color: white; border: none;
+  padding: 12px 24px; border-radius: 12px; font-size: 1rem; font-weight: 600;
+  cursor: pointer; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
 }
-
 button:hover {
-  background-color: var(--primary-hover);
-  transform: translateY(-1px);
+  background-color: var(--primary-hover); transform: translateY(-1px);
   box-shadow: 0 4px 6px rgba(79, 70, 229, 0.3);
 }
-
-button:disabled {
-  background-color: #9ca3af;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-.logout-button {
-  margin-left: 20px;
-  padding: 8px 16px;
-  font-size: 0.9rem;
-  background-color: #ef4444;
-}
+button:disabled { background-color: #9ca3af; cursor: not-allowed; transform: none; box-shadow: none; }
+.logout-button { margin-left: 20px; padding: 8px 16px; font-size: 0.9rem; background-color: #ef4444; }
 .logout-button:hover { background-color: #dc2626; }
 
 input, select, textarea {
-  width: 100%;
-  padding: 12px 16px;
-  margin: 8px 0;
-  display: inline-block;
-  border: 1px solid #d1d5db;
-  border-radius: 10px;
-  background-color: #fff;
-  font-size: 1rem;
-  outline: none;
+  width: 100%; padding: 12px 16px; margin: 8px 0; display: inline-block;
+  border: 1px solid #d1d5db; border-radius: 10px; background-color: #fff; font-size: 1rem; outline: none;
 }
-
 input:focus, select:focus, textarea:focus {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
 /* 5. Картки та сторінки */
 .card {
-  background: var(--card-bg);
-  border-radius: 16px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e5e7eb;
+  background: var(--card-bg); border-radius: 16px; padding: 20px;
+  margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border: 1px solid #e5e7eb;
 }
-
 .page h2 { margin-bottom: 1.5rem; color: #111827; }
 
 /* 6. Auth (Вхід) */
-.auth-page-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 80vh;
-  padding: 20px;
-}
-
+.auth-page-container { display: flex; justify-content: center; align-items: center; min-height: 80vh; padding: 20px; }
 .auth-form-box {
-  background: white;
-  padding: 40px;
-  border-radius: 20px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-  width: 100%;
-  max-width: 400px;
-  text-align: center;
+  background: white; padding: 40px; border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center;
 }
 
 /* 7. Footer */
-.footer {
-  background-color: #111827;
-  color: #9ca3af;
-  padding: 2rem 0;
-  margin-top: auto;
-}
-
+.footer { background-color: #111827; color: #9ca3af; padding: 2rem 0; margin-top: auto; }
 .footer-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
+  max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex;
+  justify-content: space-between; align-items: center; flex-wrap: wrap;
 }
-
-.footer-links a {
-  color: #d1d5db;
-  text-decoration: none;
-  margin-left: 20px;
-  transition: color 0.2s;
-}
+.footer-links a { color: #d1d5db; text-decoration: none; margin-left: 20px; transition: color 0.2s; }
 .footer-links a:hover { color: white; }
 
-/* 8. Спеціальні класи для сторінок (НОВЕ) */
-.lessons-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+/* 8. Спеціальні класи для сторінок */
+.lessons-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.filters { display: flex; gap: 10px; }
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+/* 👇 НОВЕ: Стилі для кнопок у картці уроку */
+.lesson-card-actions {
+    display: flex;
+    flex-wrap: wrap; /* Дозволяє кнопкам переноситись */
+    gap: 10px; /* Відступ між кнопками (і горизонтальний, і вертикальний) */
+    margin-top: 15px;
 }
 
-.filters {
-  display: flex;
-  gap: 10px;
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-/* 9. Quiz Styles */
+/* 9. Quiz Styles (з попереднього кроку) */
 .quiz-option {
-  display: flex;
-  align-items: center;
-  margin-bottom: 15px;
-  cursor: pointer;
-  padding: 10px;
-  border-radius: 10px;
-  transition: background-color 0.2s;
-  border: 2px solid transparent;
+  display: flex; align-items: center; margin-bottom: 15px; cursor: pointer;
+  padding: 10px; border-radius: 10px; transition: background-color 0.2s; border: 2px solid transparent;
 }
 .quiz-option:hover { background-color: #eef2ff; }
 .quiz-option.selected { background-color: #e0e7ff; border-color: var(--primary-color); }
 .custom-radio {
-  -webkit-appearance: none; appearance: none;
-  min-width: 24px; width: 24px; height: 24px;
-  border: 2px solid #9ca3af; border-radius: 6px;
-  margin-right: 15px; position: relative; cursor: pointer; background-color: white;
+  -webkit-appearance: none; appearance: none; min-width: 24px; width: 24px; height: 24px;
+  border: 2px solid #9ca3af; border-radius: 6px; margin-right: 15px; position: relative;
+  cursor: pointer; background-color: white;
 }
 .custom-radio:checked { background-color: var(--primary-color); border-color: var(--primary-color); }
 .custom-radio:checked::after {
-  content: '✔'; color: white; font-size: 16px;
-  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); line-height: 1;
+  content: '✔'; color: white; font-size: 16px; position: absolute; top: 50%;
+  left: 50%; transform: translate(-50%, -50%); line-height: 1;
 }
 
 /* 🔥 10. АДАПТИВНІСТЬ (MOBILE) 🔥 */
 @media (max-width: 768px) {
   /* Шапка в стовпчик */
-  header {
-    flex-direction: column;
-    gap: 1rem;
-    text-align: center;
-  }
-
-  nav {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    gap: 10px;
-  }
-
-  nav a { margin: 0; padding: 10px; background: #f9fafb; border-radius: 8px; }
+  header { flex-direction: column; gap: 1rem; text-align: center; padding: 1rem; }
+  nav { display: flex; flex-direction: column; width: 100%; gap: 10px; }
+  nav a { margin: 0; padding: 12px; background: #f9fafb; border-radius: 8px; text-align: center; }
   .logout-button { margin: 0; width: 100%; }
 
   /* Сторінка уроків */
-  .lessons-header {
-    flex-direction: column;
-    align-items: stretch; /* Розтягнути на всю ширину */
-    gap: 15px;
-  }
+  .lessons-header { flex-direction: column; align-items: stretch; gap: 15px; }
+  .filters { flex-direction: column; width: 100%; }
 
-  .filters {
-    flex-direction: column;
-    width: 100%;
+  /* 👇 НОВЕ: Кнопки в картках на мобільному на всю ширину */
+  .lesson-card-actions {
+      flex-direction: column; /* Кнопки одна під одною */
+  }
+  .lesson-card-actions button {
+      width: 100%; /* Розтягнути на всю ширину */
   }
 
   /* Сторінка прогресу */
-  .stats-grid {
-    grid-template-columns: 1fr; /* Одна колонка замість двох */
-  }
+  .stats-grid { grid-template-columns: 1fr; }
 
   /* Футер */
-  .footer-content {
-    flex-direction: column;
-    gap: 20px;
-    text-align: center;
-  }
-  
-  .footer-links a {
-    display: block;
-    margin: 10px 0;
-  }
+  .footer-content { flex-direction: column; gap: 20px; text-align: center; }
+  .footer-links a { display: block; margin: 10px 0; }
 }
